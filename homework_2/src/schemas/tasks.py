@@ -16,6 +16,7 @@ class TaskAddingSchema(BaseModel):
     about: Optional[str] = None
     importance: Literal["Must do", "Should do", "Nice to do", "Optional"]
     responsible_id: int
+    deadline: date
     is_done: bool = False
     
 
