@@ -21,10 +21,8 @@ class TasksRepository:
 
         return task_db
 
-    def get_all(self, limit, offset, author_id: int) -> List[Tasks]:
-        return (
-            self.db.query(Tasks).filter(Tasks.author_id == author_id).limit(limit).offset(offset).all()
-        )
+    def get_all(self, limit, offset) -> List[Tasks]:
+        return self.db.query(Tasks).limit(limit).offset(offset).all()
 
     def get_by_id(self, task_id: int) -> Optional[Tasks]:
         return self.db.query(Tasks).filter(Tasks.id == task_id).first()

@@ -10,6 +10,7 @@ class CommentAddingSchema(BaseModel):
 class BaseComment(BaseModel):
     id: int
     task_id: int
+    author_id: int
     text: str
     created_at: datetime
 

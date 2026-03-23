@@ -24,13 +24,13 @@ def get_current_username(request: Request) -> str:
 
 
 @router.post("/")
-def add_task(
+async def create_task(
         payload: TaskAddingSchema,
         request: Request,
         service: TasksService = Depends()
 ) -> JSONResponse:
     username = get_current_username(request)
-    add_result = service.add_task(payload, author_username=username)
+    add_result = service.create_task(payload, author_username=username)
 
     return JSONResponse({
         "message": "Задача добавлена",
@@ -44,11 +44,8 @@ def get_task(
         request: Request,
         service: TasksService = Depends()
 ) -> JSONResponse:
-    username = get_current_username(request)
-    author = service.get_user_by_username(username)
+    get_current_username(request)
     get_result = service.get_task_by_id(task_id)
-    if get_result.author_id != author.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Запрещено")
 
     return JSONResponse(jsonable_encoder(get_result), status.HTTP_200_OK)
 
@@ -60,8 +57,8 @@ def get_tasks_list(
         offset: int = 0,
         service: TasksService = Depends()
 ) -> list[BaseTask]:
-    username = get_current_username(request)
-    get_result = service.get_tasks(limit, offset, author_username=username)
+    get_current_username(request)
+    get_result = service.get_tasks(limit, offset)
     return get_result
 
 

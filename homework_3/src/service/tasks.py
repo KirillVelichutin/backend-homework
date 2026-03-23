@@ -25,7 +25,7 @@ class TasksService:
 
         return db_user
 
-    def add_task(self, new_task: TaskAddingSchema, author_username: str):
+    def create_task(self, new_task: TaskAddingSchema, author_username: str):
         self.check_responsible_user_exists(new_task.responsible_id)
         author = self.get_user_by_username(author_username)
         task_db = self.repo.create(new_task, author_id=author.id)
@@ -40,9 +40,8 @@ class TasksService:
 
         return task_db
 
-    def get_tasks(self, limit, offset, author_username: str) -> list[BaseTask]:
-        author = self.get_user_by_username(author_username)
-        return self.repo.get_all(limit, offset, author.id)
+    def get_tasks(self, limit, offset) -> list[BaseTask]:
+        return self.repo.get_all(limit, offset)
 
     def update_task(self, id: int, payload: TaskUpdatingSchema) -> BaseTask | None:
         db_task = self.repo.update(id, payload)

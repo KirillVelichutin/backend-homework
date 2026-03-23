@@ -30,15 +30,6 @@ class CommentsService:
 
         return task_db
 
-    def ensure_task_access(self, task_id: int, username: str):
-        user = self.get_user_by_username(username)
-        task = self.get_task_by_id(task_id)
-
-        if task.author_id != user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Запрещено")
-
-        return task
-
     def get_comment_by_id(self, task_id: int, comment_id: int):
         comment = self.repo.get_by_id(comment_id)
         if not comment or comment.task_id != task_id:
@@ -47,14 +38,19 @@ class CommentsService:
         return comment
 
     def add_comment(self, task_id: int, payload: CommentAddingSchema, username: str) -> BaseComment:
-        self.ensure_task_access(task_id, username)
-        return self.repo.create(task_id, payload)
+        user = self.get_user_by_username(username)
+        self.get_task_by_id(task_id)
+        return self.repo.create(task_id, user.id, payload)
 
     def get_comments(self, task_id: int, username: str) -> list[BaseComment]:
-        self.ensure_task_access(task_id, username)
+        self.get_user_by_username(username)
+        self.get_task_by_id(task_id)
         return self.repo.get_by_task_id(task_id)
 
     def delete_comment(self, task_id: int, comment_id: int, username: str) -> None:
-        self.ensure_task_access(task_id, username)
+        user = self.get_user_by_username(username)
+        self.get_task_by_id(task_id)
         comment = self.get_comment_by_id(task_id, comment_id)
+        if comment.author_id != user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Запрещено")
         self.repo.delete(comment)

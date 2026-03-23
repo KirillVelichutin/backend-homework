@@ -12,8 +12,8 @@ class CommentsRepository:
     def __init__(self, db: Session = Depends(get_db)):
         self.db = db
 
-    def create(self, task_id: int, comment: CommentAddingSchema) -> Comments:
-        comment_db = Comments(task_id=task_id, **comment.model_dump())
+    def create(self, task_id: int, author_id: int, comment: CommentAddingSchema) -> Comments:
+        comment_db = Comments(task_id=task_id, author_id=author_id, **comment.model_dump())
         self.db.add(comment_db)
         self.db.commit()
         self.db.refresh(comment_db)
