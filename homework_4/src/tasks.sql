@@ -12,7 +12,7 @@ CREATE TABLE "tasks" (
   "importance" varchar(20) NOT NULL,
   "author_id" integer NOT NULL,
   "responsible_id" integer NOT NULL,
-  "deadline" date NOT NULL,
+  "deadline" timestamptz DEFAULT now(),
   "is_done" boolean NOT NULL DEFAULT FALSE
 );
 
@@ -26,5 +26,5 @@ CREATE TABLE "comments" (
 
 ALTER TABLE "tasks" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE "tasks" ADD FOREIGN KEY ("responsible_id") REFERENCES "users" ("id") DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE "comments" ADD FOREIGN KEY ("task_id") REFERENCES "tasks" ("id") ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "comments" ADD FOREIGN KEY ("task_id") REFERENCES "tasks" ("id") DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE "comments" ADD FOREIGN KEY ("author_id") REFERENCES "users" ("id") DEFERRABLE INITIALLY IMMEDIATE;
